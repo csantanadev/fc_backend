@@ -37,4 +37,56 @@ export class UserPrismaRepository implements IUserRepository {
     });
     return user;
   }
+
+  async update(payload: User, id: string): Promise<void> {
+    await prismaClient.user.update({
+      where: {
+        id: id,
+      },
+      data: {
+        name: payload.name,
+        username: payload.username,
+        password: payload.password,
+        email: payload.email,
+        cpf: payload.cpf,
+        phone: payload.phone,
+        date_birth: payload.date_birth,
+        mother_name: payload.mother_name,
+      },
+    });
+  }
+
+  async delete(ids: string[]): Promise<void> {
+    await prismaClient.user.updateMany({
+      data: {
+        status: "I",
+      },
+      where: {
+        id: {
+          in: ids,
+        },
+      },
+    });
+  }
+
+  async passwordRecovery(
+    id: string,
+    cpf: string,
+    motherName: string,
+    email: string
+  ): Promise<string> {
+    const psw = await prismaClient.user.findFirst({
+      where: {
+        AND: [
+          { id },
+          { cpf },
+          { mother_name: motherName },
+          { email },
+          { status: "A" },
+        ],
+      },
+    });
+
+    return psw?.password || "";
+  }
 }

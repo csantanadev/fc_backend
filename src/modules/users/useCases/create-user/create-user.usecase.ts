@@ -35,6 +35,16 @@ export class CreateUserUseCase {
 
     const userCreated = await this.userRepository.save(user);
 
-    return userCreated;
+    return {
+      id: userCreated.id,
+      name: userCreated.name,
+      username: userCreated.username,
+      email: userCreated.email,
+      phone: userCreated.phone,
+      cpf: userCreated.cpf,
+      date_birth: userCreated.date_birth,
+      mother_name: userCreated.mother_name,
+      status: userCreated.status,
+    };
   }
 }

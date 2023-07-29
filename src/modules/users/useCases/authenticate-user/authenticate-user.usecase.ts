@@ -36,6 +36,15 @@ export class AuthenticateUserUseCase {
       );
     }
 
+    // diferente de bloqueado ou inativo
+    if (user.status !== 'A') {
+      throw new CustomError(
+        "The user is blocked or inactive.",
+        StatusCodes.NOT_FOUND,
+        "USER_UNAUTHORIZED"
+      );
+    }
+
     const comparePasswordEquals = await this.passwordCrypto.compare(
       password,
       user.password

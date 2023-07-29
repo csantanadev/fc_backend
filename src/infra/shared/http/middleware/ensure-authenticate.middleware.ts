@@ -17,7 +17,7 @@ export const ensureAuthenticate = (
 
   const [, token] = headerAuth.split(" ");
 
-  if (!token) {
+  if (token === 'undefined') {
     return response
       .status(StatusCodes.UNAUTHORIZED)
       .json({ error: "Token is missing" });

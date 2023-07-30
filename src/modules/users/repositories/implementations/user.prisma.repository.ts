@@ -1,6 +1,6 @@
 import { prismaClient } from "../../../../infra/databases/prisma.config";
 import { User } from "../../entities/user.entity";
-import { IUserRepository } from "./../user.repository";
+import { IUserRepository, SearchParams } from "./../user.repository";
 
 export class UserPrismaRepository implements IUserRepository {
   async findByUserName(username: string): Promise<User | undefined> {
@@ -88,5 +88,21 @@ export class UserPrismaRepository implements IUserRepository {
     });
 
     return psw?.password || "";
+  }
+
+  async findUserByParams(params: SearchParams): Promise<User[] | null> {
+    let whereClause: any = {};
+
+    if (params.name) {
+      whereClause.name = {
+        contains: params.name,
+      };
+    }
+
+    const users = await prismaClient.user.findMany({
+      where: { ...whereClause },
+    });
+
+    return users || null;
   }
 }

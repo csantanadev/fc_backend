@@ -5,6 +5,7 @@ import { ensureAuthenticate } from "../infra/shared/http/middleware/ensure-authe
 import { updateUserController } from "../modules/users/useCases/update-user";
 import { deleteUserController } from "../modules/users/useCases/delete-user";
 import { passwordRecoveryController } from "../modules/users/useCases/password-recovery";
+import { searchUserController } from "../modules/users/useCases/search-user";
 
 const userRoutes = Router();
 
@@ -19,10 +20,12 @@ userRoutes.post(
   "/users/:id/password-recovery",
   passwordRecoveryController.recovery
 );
-
+// change password
 userRoutes.patch(
-    "/users/:id/change-password",
-    passwordRecoveryController.changePassword
-  );
+  "/users/:id/change-password",
+  passwordRecoveryController.changePassword
+);
+
+userRoutes.get("/users", searchUserController.handle);
 
 export { userRoutes };

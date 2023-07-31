@@ -21,6 +21,7 @@ export type SearchParams = {
   update_at_start?: string;
   update_at_end?: string;
   age_range?: AgeRange;
+  page: number;
 };
 
 export type UserDto = Omit<User, "password"> & {

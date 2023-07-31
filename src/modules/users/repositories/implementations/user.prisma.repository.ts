@@ -109,6 +109,7 @@ export class UserPrismaRepository implements IUserRepository {
     create_at_end,
     update_at_start,
     update_at_end,
+    page,
   }: SearchParams): Promise<UsersResponse | null> {
     const whereClause: any = [];
 
@@ -199,12 +200,15 @@ export class UserPrismaRepository implements IUserRepository {
       });
     }
 
-    console.log(whereClause);
+    const limit = Number(process.env.LIMIT_PAGE || 10);
+    const offset = limit * page - limit;
 
     const users = await prismaClient.v_users.findMany({
       where: {
         AND: whereClause,
       },
+      take: limit,
+      skip: offset,
     });
 
     return {

@@ -12,6 +12,8 @@ export class SearchUserController {
   handle = async (request: Request, response: Response) => {
     try {
       const { body } = request;
+      const { page } = request.query;
+      const p = page ? Number(page) : 1;
 
       // validação de schema
       validatorSchema(searchUsersSchema, body);
@@ -64,6 +66,7 @@ export class SearchUserController {
         create_at_end,
         update_at_start,
         update_at_end,
+        page: p,
       });
 
       return response.status(StatusCodes.OK).json(users);

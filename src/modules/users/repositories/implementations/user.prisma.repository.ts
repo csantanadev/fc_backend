@@ -6,6 +6,7 @@ import {
   AgeRange,
   IUserRepository,
   SearchParams,
+  UserDto,
   UsersResponse,
 } from "./../user.repository";
 

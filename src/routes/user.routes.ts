@@ -26,6 +26,7 @@ userRoutes.patch(
   passwordRecoveryController.changePassword
 );
 
-userRoutes.get("/users", searchUserController.handle);
+userRoutes.get("/users", searchUserController.searchUser);
+userRoutes.get("/users/:id", searchUserController.getUserById);
 
 export { userRoutes };

@@ -9,7 +9,7 @@ import { AgeRange } from "../../repositories/user.repository";
 export class SearchUserController {
   constructor(private readonly searchUserUseCase: SearchUserUseCase) {}
 
-  handle = async (request: Request, response: Response) => {
+  searchUser = async (request: Request, response: Response) => {
     try {
       const { body } = request;
       const { page } = request.query;
@@ -54,7 +54,7 @@ export class SearchUserController {
           break;
       }
 
-      const users = await this.searchUserUseCase.excute({
+      const users = await this.searchUserUseCase.searchUser({
         name,
         cpf,
         username,
@@ -70,6 +70,23 @@ export class SearchUserController {
       });
 
       return response.status(StatusCodes.OK).json(users);
+    } catch (error: any) {
+      if (error instanceof ValidationSchemaError) {
+        return response.status(error.statusCode).json(error.errors);
+      }
+      return response
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ message: error.message });
+    }
+  };
+
+  getUserById = async (request: Request, response: Response) => {
+    try {
+      const { id } = request.params;
+
+      const user = await this.searchUserUseCase.getUserById(id)
+
+      return response.status(StatusCodes.OK).json(user);
     } catch (error: any) {
       if (error instanceof ValidationSchemaError) {
         return response.status(error.statusCode).json(error.errors);

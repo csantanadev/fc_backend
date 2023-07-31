@@ -1,6 +1,13 @@
 import { prismaClient } from "../../../../infra/databases/prisma.config";
+import { endOfDay, startOfDay } from "../../../../utils/date";
 import { User } from "../../entities/user.entity";
-import { IUserRepository, SearchParams } from "./../user.repository";
+import { SearchUserMapper } from "../../useCases/search-user/search-user.mapper";
+import {
+  AgeRange,
+  IUserRepository,
+  SearchParams,
+  UsersResponse,
+} from "./../user.repository";
 
 export class UserPrismaRepository implements IUserRepository {
   async findByUserName(username: string): Promise<User | undefined> {
@@ -90,19 +97,119 @@ export class UserPrismaRepository implements IUserRepository {
     return psw?.password || "";
   }
 
-  async findUserByParams(params: SearchParams): Promise<User[] | null> {
-    let whereClause: any = {};
+  async findUserByParams({
+    name,
+    cpf,
+    username,
+    status,
+    age_range,
+    date_birth_start,
+    date_birth_end,
+    create_at_start,
+    create_at_end,
+    update_at_start,
+    update_at_end,
+  }: SearchParams): Promise<UsersResponse | null> {
+    const whereClause: any = [];
 
-    if (params.name) {
-      whereClause.name = {
-        contains: params.name,
-      };
+    if (name) {
+      whereClause.push({ name: { contains: name } });
+    }
+    if (cpf) {
+      whereClause.push({ cpf });
+    }
+    if (username) {
+      whereClause.push({ username });
+    }
+    if (status) {
+      whereClause.push({ status });
+    }
+    if (age_range) {
+      switch (age_range) {
+        case AgeRange.UnderNineteen:
+          whereClause.push({
+            age: {
+              lte: 18,
+            },
+          });
+          break;
+        case AgeRange.Nineteen_TwentyFive:
+          whereClause.push({
+            age: {
+              gte: 19,
+              lte: 25,
+            },
+          });
+          break;
+        case AgeRange.TwentySix_Thirty:
+          whereClause.push({
+            age: {
+              gte: 26,
+              lte: 30,
+            },
+          });
+          break;
+        case AgeRange.ThirtyOne_ThirtyFive:
+          whereClause.push({
+            age: {
+              gte: 31,
+              lte: 35,
+            },
+          });
+          break;
+        case AgeRange.ThirtySix_Forty:
+          whereClause.push({
+            age: {
+              gte: 36,
+              lte: 40,
+            },
+          });
+          break;
+        case AgeRange.OverForty:
+          whereClause.push({
+            age: {
+              gte: 40,
+            },
+          });
+          break;
+      }
+    }
+    if (date_birth_start && date_birth_end) {
+      whereClause.push({
+        date_birth: {
+          gte: startOfDay(date_birth_start),
+          lte: endOfDay(date_birth_end),
+        },
+      });
+    }
+    if (create_at_start && create_at_end) {
+      whereClause.push({
+        create_at: {
+          gte: startOfDay(create_at_start),
+          lte: endOfDay(create_at_end),
+        },
+      });
+    }
+    if (update_at_start && update_at_end) {
+      whereClause.push({
+        update_at: {
+          gte: startOfDay(update_at_start),
+          lte: endOfDay(update_at_end),
+        },
+      });
     }
 
-    const users = await prismaClient.user.findMany({
-      where: { ...whereClause },
+    console.log(whereClause);
+
+    const users = await prismaClient.v_users.findMany({
+      where: {
+        AND: whereClause,
+      },
     });
 
-    return users || null;
+    return {
+      records: SearchUserMapper.PrismaToEntity(users),
+      all_records: users[0]?.count,
+    };
   }
 }

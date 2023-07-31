@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["views"]
 }
 
 datasource db {
@@ -22,4 +23,20 @@ model User {
   update_at   DateTime @updatedAt
 
   @@map("users")
+}
+
+view v_users {
+  id          String
+  name        String
+  username    String   @unique
+  email       String
+  phone       String
+  cpf         String
+  status      String
+  date_birth  DateTime
+  mother_name String
+  create_at   DateTime
+  update_at   DateTime
+  age         Int
+  count       Int
 }

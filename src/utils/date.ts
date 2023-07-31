@@ -38,10 +38,10 @@ export function toDate(date: Date) {
   return dayjs(date).toDate();
 }
 
-export function startOfDay() {
-  return dayjs().startOf("D").toDate();
+export function startOfDay(strDate: string) {
+  return dayjs(strDate).startOf("day").toDate();
 }
 
-export function endOfDay() {
-  return dayjs().endOf("D").toDate();
+export function endOfDay(strDate: string) {
+  return dayjs(strDate).endOf("day").toDate();
 }

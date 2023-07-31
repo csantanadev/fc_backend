@@ -1,12 +1,12 @@
 import { User } from "../entities/user.entity";
 
 export enum AgeRange {
-  UnderNineteen,
-  Nineteen_TwentyFive,
-  TwentySix_Thirty,
-  ThirtyOne_ThirtyFive,
-  ThirtySix_Forty,
-  OverForty,
+  UnderNineteen = "UnderNineteen",
+  Nineteen_TwentyFive = "Nineteen_TwentyFive",
+  TwentySix_Thirty = "TwentySix_Thirty",
+  ThirtyOne_ThirtyFive = "ThirtyOne_ThirtyFive",
+  ThirtySix_Forty = "ThirtySix_Forty",
+  OverForty = "OverForty",
 }
 
 export type SearchParams = {
@@ -23,6 +23,16 @@ export type SearchParams = {
   age_range?: AgeRange;
 };
 
+export type UserDto = Omit<User, "password"> & {
+  create_at: Date;
+  update_at: Date;
+};
+
+export type UsersResponse = {
+  records: UserDto[];
+  all_records: number;
+};
+
 export interface IUserRepository {
   findByUserId(id: string): Promise<User | undefined>;
   findByUserName(username: string): Promise<User | undefined>;
@@ -35,5 +45,5 @@ export interface IUserRepository {
     motherName: string,
     email: string
   ): Promise<string>;
-  findUserByParams(params: SearchParams): Promise<User[] | null>;
+  findUserByParams(params: SearchParams): Promise<UsersResponse | null>;
 }

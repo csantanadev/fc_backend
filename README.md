@@ -21,3 +21,7 @@
   npm run dev 
 ```
 
+#### Quarto Passo:
+
+- Importar a collection "collection_fc_backend.json" no Insomnia.
+

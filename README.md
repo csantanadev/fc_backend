@@ -25,3 +25,13 @@
 
 - Importar a collection "collection_fc_backend.json" no Insomnia.
 
+## Exemplos de requests
+
+- Login
+
+```
+  {
+	  "username": "admin",
+	  "password": "admin"
+  }
+```

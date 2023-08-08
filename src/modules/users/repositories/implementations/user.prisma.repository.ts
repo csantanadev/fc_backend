@@ -214,7 +214,7 @@ export class UserPrismaRepository implements IUserRepository {
 
     return {
       records: SearchUserMapper.PrismaToEntity(users),
-      all_records: users[0]?.count,
+      all_records: users.length,
     };
   }
 }
